@@ -31,6 +31,8 @@ function App() {
     });
   };
 
+  const changeCodeDemo = () => {};
+
   return (
     <div style={{ display: "flex", gap: 20 }}>
       {renderProducts(dataProducts)}
