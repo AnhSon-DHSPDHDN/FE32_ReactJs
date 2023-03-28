@@ -3,13 +3,6 @@ import Button from '../Button';
 import './Task.scss';
 
 const Task = ({ task, handleMakeDoneTask, handleDeleteTask }) => {
-  const onMakeDoneTask = (id) => {
-    handleMakeDoneTask(id)
-  }
-
-  const onDeleteTask = (id) => {
-    handleDeleteTask(id)
-  }
 
   return (
     <div className='task-wrapper'>
@@ -17,10 +10,8 @@ const Task = ({ task, handleMakeDoneTask, handleDeleteTask }) => {
         {task?.taskName || ''}
       </span>
       <div className='task-group-btn'>
-        {!task?.isDone && <Button label='Done'
-          onClick={() => onMakeDoneTask(task.id)}
-        />}
-        <Button label='Del' onClick={onDeleteTask} />
+        {!task?.isDone && <Button label='Done' />}
+        <Button label='Del' />
       </div>
     </div>
   )
