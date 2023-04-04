@@ -10,8 +10,8 @@ const Task = ({ task, handleMakeDoneTask, handleDeleteTask }) => {
         {task?.taskName || ''}
       </span>
       <div className='task-group-btn'>
-        {!task?.isDone && <Button label='Done' />}
-        <Button label='Del' />
+        {!task?.isDone && <Button label='Done' onClick={() => handleMakeDoneTask(task.id)} />}
+        <Button label='Del' onClick={() => handleDeleteTask(task.id)} />
       </div>
     </div>
   )
