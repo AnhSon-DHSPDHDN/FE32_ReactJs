@@ -4,8 +4,6 @@ import Button from "../../components/Button";
 import Divider from "../../components/Divider";
 import InputTask from "../../components/InputTask";
 import Task from "../../components/Task";
-import { KEY_TASK_LIST } from "../../constants/common";
-import { makeRandomId } from "../../utils";
 import "./TodoListLayout.scss"
 
 const TodoListLayout = () => {
@@ -40,34 +38,32 @@ const TodoListLayout = () => {
     setInputTask(event.target.value)
   }
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (inputTask === "") return
 
     const task = {
-      id: makeRandomId(),
       taskName: inputTask,
-      isDone: false
+      isDone: false,
+      createAt: new Date().getTime()
     }
-    setTaskList([task, ...taskList])
+
+    await taskApi.addTask(task)
+    await handleFetchTaskList()
     setInputTask("")
-    localStorage.setItem(KEY_TASK_LIST, JSON.stringify([task, ...taskList]))
   }
 
-  const handleDeleteTask = (id) => {
-    const taskListClone = taskList.filter(task => task.id !== id)
-    setTaskList(taskListClone)
-    localStorage.setItem(KEY_TASK_LIST, JSON.stringify(taskListClone))
+  const handleDeleteTask = async (id) => {
+    await taskApi.deleteTaskById(id)
+    await handleFetchTaskList()
   }
 
-  const handleMakeDoneTask = (id) => {
-    const existedTaskIndex = taskList.findIndex(task => task.id === id)
-    const taskListClone = [...taskList]
-    taskListClone[existedTaskIndex] = {
-      ...taskListClone[existedTaskIndex],
+  const handleMakeDoneTask = async (id) => {
+    const currentTask = await taskApi.getTaskById(id)
+    await taskApi.updateTaskById(id, {
+      ...currentTask,
       isDone: true
-    }
-    setTaskList(taskListClone)
-    localStorage.setItem(KEY_TASK_LIST, JSON.stringify(taskListClone))
+    })
+    await handleFetchTaskList()
   }
 
   return <div className="todo-layout-wrapper">
