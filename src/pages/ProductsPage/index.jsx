@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 const initialValue = {
   productName: "",
@@ -6,31 +6,9 @@ const initialValue = {
   productDescription: ""
 }
 
-const mockData = {
-  product_name: "Son Sieu Xe",
-  product_type: "Lambogini",
-  product_description: "Super car"
-}
-
 const ProductPage = () => {
   const [formState, setFormState] = useState(initialValue)
-  const [data, setData] = useState(null)
-
-  useEffect(() => {
-    setTimeout(() => { // fake call api
-      setData(mockData)
-    }, 2000)
-  }, [])
-
-  useEffect(() => {
-    if (!data) return
-
-    setFormState({
-      productName: data.product_name,
-      productType: data.product_type,
-      productDescription: data.product_description
-    })
-  }, [data])
+  const [errorsForm, setErrorsForm] = useState({})
 
   const handleOnChange = (event) => {
     const { value, name } = event.target
@@ -40,10 +18,35 @@ const ProductPage = () => {
     })
   }
 
+  const validateForm = (formValues) => {
+    let isValid = true
+    const errors = {}
+    if (formValues.productName === '') {
+      isValid = false
+      errors.productName = "please input ProductName"
+    }
+    if (formValues.productType === '') {
+      isValid = false
+      errors.productType = "please input productType"
+    }
+    if (formValues.productDescription === '') {
+      isValid = false
+      errors.productDescription = "please input productDescription"
+    }
+
+    setErrorsForm(errors)
+    return isValid
+  }
+
   const handleSubmitForm = (event) => {
     event.preventDefault()
-    console.log(formState);
-    setFormState(initialValue)
+    const isValid = validateForm(formState)
+
+    if (isValid) {
+      // Submit form
+      setErrorsForm({})
+      setFormState(initialValue)
+    }
   }
 
   return (
@@ -57,6 +60,7 @@ const ProductPage = () => {
             value={formState.productName}
             onChange={handleOnChange}
           />
+          {!!errorsForm.productName && <div>{errorsForm.productName}</div>}
         </div>
         <div>
           <label>Product Type:</label>
@@ -66,6 +70,7 @@ const ProductPage = () => {
             value={formState.productType}
             onChange={handleOnChange}
           />
+          {!!errorsForm.productType && <div>{errorsForm.productType}</div>}
         </div>
         <div>
           <label>Product Description:</label>
@@ -75,6 +80,7 @@ const ProductPage = () => {
             value={formState.productDescription}
             onChange={handleOnChange}
           />
+          {!!errorsForm.productDescription && <div>{errorsForm.productDescription}</div>}
         </div>
         <button type='submit'>Submit</button>
       </form>
