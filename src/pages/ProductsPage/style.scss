@@ -1,0 +1,22 @@
+.product-page {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-direction: column;
+}
+
+.product-form {
+  width: 500px;
+
+  &__gr-input {
+    width: 100%;
+    position: relative;
+    height: 40px;
+  }
+
+  &__gr-err-mess {
+    position: absolute;
+    bottom: -10px;
+  }
+}

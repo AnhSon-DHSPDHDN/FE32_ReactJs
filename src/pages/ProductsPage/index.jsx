@@ -1,89 +1,134 @@
 import React, { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { productFormSchema } from '../../validations/productFormSchema'
+import ProductTable from '../../components/ProductTable'
+import { KEY_PRODUCT_LIST } from '../../constants/common'
+import './style.scss'
 
-const initialValue = {
-  productName: "",
-  productType: "",
-  productDescription: ""
+// Tạo form nhập thông tin hàng hóa và in ra màn hình dưới dạng list để quản lý
+// form gồm các field:
+// - mã hàng (SKU): ví dụ SP001
+// - Tên: ví dụ Lego Bumblebee
+// - loại ngành hàng:  tạo select option với các giá trị (toys, food, education, book)
+// - số lượng
+// - giá nhập
+// - giá bán
+// - có nút submit
+// - có validate cho tất cả các field, yêu cầu điền tất cả
+// - lưu dữ liệu vào localStorage
+// - tính tổng số lượng tiền hàng của tất cả mặt hàng trong kho
+// - UI tùy chọn, tự thiết kế
+
+const initialFormValues = {
+  productId: '',
+  productName: '',
+  productType: 'education',
+  productQuantity: '',
+  inputPrice: '',
+  salePrice: '',
 }
 
 const ProductPage = () => {
-  const [formState, setFormState] = useState(initialValue)
-  const [errorsForm, setErrorsForm] = useState({})
+  const methods = useForm({
+    defaultValues: initialFormValues,
+    resolver: yupResolver(productFormSchema)
+  })
+  const { control, handleSubmit, formState: { errors }, reset } = methods
+  const [productList, setProductList] = useState(
+    JSON.parse(localStorage.getItem(KEY_PRODUCT_LIST)) || []
+  )
 
-  const handleOnChange = (event) => {
-    const { value, name } = event.target
-    setFormState({
-      ...formState,
-      [name]: value
-    })
-  }
-
-  const validateForm = (formValues) => {
-    let isValid = true
-    const errors = {}
-    if (formValues.productName === '') {
-      isValid = false
-      errors.productName = "please input ProductName"
-    }
-    if (formValues.productType === '') {
-      isValid = false
-      errors.productType = "please input productType"
-    }
-    if (formValues.productDescription === '') {
-      isValid = false
-      errors.productDescription = "please input productDescription"
-    }
-
-    setErrorsForm(errors)
-    return isValid
-  }
-
-  const handleSubmitForm = (event) => {
-    event.preventDefault()
-    const isValid = validateForm(formState)
-
-    if (isValid) {
-      // Submit form
-      setErrorsForm({})
-      setFormState(initialValue)
-    }
+  const onValid = (values) => {
+    setProductList([values, ...productList])
+    localStorage.setItem(KEY_PRODUCT_LIST, JSON.stringify([values, ...productList]))
+    reset(initialFormValues)
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmitForm}>
-        <div>
-          <label>Product Name:</label>
-          <input
-            type="text"
+    <div className='product-page'>
+      <form className='product-form' onSubmit={handleSubmit(onValid)}>
+        <div className='product-form__gr-input'>
+          <label>Mã hàng</label>
+          <Controller
+            name='productId'
+            control={control}
+            render={({ field: { onChange, value } }) => {
+              return <input
+                type={"text"}
+                placeholder="Ma hang"
+                onChange={onChange}
+                value={value}
+              />
+            }}
+          />
+          {!!errors.productId && <p className='product-form__gr-err-mess' style={{ color: 'red', fontSize: 12 }}>{errors.productId?.message}</p>}
+        </div>
+        <div className='product-form__gr-input'>
+          <label>Tên hàng</label>
+          <Controller
             name='productName'
-            value={formState.productName}
-            onChange={handleOnChange}
+            control={control}
+            render={({ field }) => {
+              return <input type={"text"} placeholder="Ten hang" {...field} />
+            }}
           />
-          {!!errorsForm.productName && <div>{errorsForm.productName}</div>}
+          {!!errors.productName && <p className='product-form__gr-err-mess' style={{ color: 'red', fontSize: 12 }}>{errors.productName?.message}</p>}
         </div>
-        <div>
-          <label>Product Type:</label>
-          <input
-            type="text"
+        <div className='product-form__gr-input'>
+          <label>Loại ngành hàng</label>
+          <Controller
             name='productType'
-            value={formState.productType}
-            onChange={handleOnChange}
+            control={control}
+            render={({ field }) => {
+              return <select {...field}>
+                <option value={"toys"}>Toys</option>
+                <option value={"food"}>Food</option>
+                <option value={"education"}>Education</option>
+                <option value={"book"}>Book</option>
+              </select>
+            }}
           />
-          {!!errorsForm.productType && <div>{errorsForm.productType}</div>}
+        </div>
+        <div className='product-form__gr-input'>
+          <label>Số lượng</label>
+          <Controller
+            name='productQuantity'
+            control={control}
+            render={({ field }) => {
+              return <input type={"number"} placeholder="So luong" {...field} />
+            }}
+          />
+          {!!errors.productQuantity && <p className='product-form__gr-err-mess' style={{ color: 'red', fontSize: 12 }}>{errors.productQuantity?.message}</p>}
+        </div>
+        <div className='product-form__gr-input'>
+          <label>Gía nhập</label>
+          <Controller
+            name='inputPrice'
+            control={control}
+            render={({ field }) => {
+              return <input type={"number"} placeholder="Gía nhập" {...field} />
+            }}
+          />
+          {!!errors.inputPrice && <p className='product-form__gr-err-mess' style={{ color: 'red', fontSize: 12 }}>{errors.inputPrice?.message}</p>}
+        </div>
+        <div className='product-form__gr-input'>
+          <label>Giá bán</label>
+          <Controller
+            name='salePrice'
+            control={control}
+            render={({ field }) => {
+              return <input type={"number"} placeholder="Giá bán" {...field} />
+            }}
+          />
+          {!!errors.salePrice && <p className='product-form__gr-err-mess' style={{ color: 'red', fontSize: 12 }}>{errors.salePrice?.message}</p>}
         </div>
         <div>
-          <label>Product Description:</label>
-          <input
-            type="text"
-            name='productDescription'
-            value={formState.productDescription}
-            onChange={handleOnChange}
-          />
-          {!!errorsForm.productDescription && <div>{errorsForm.productDescription}</div>}
+          <button type='submit'>Submit</button>
         </div>
-        <button type='submit'>Submit</button>
       </form>
+
+      <ProductTable productList={productList} />
     </div>
   )
 }

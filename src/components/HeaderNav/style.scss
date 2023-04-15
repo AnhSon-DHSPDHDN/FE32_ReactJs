@@ -1,0 +1,21 @@
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+  background: rgb(99, 140, 217);
+  margin-bottom: 20px;
+  align-items: center;
+
+  &__wrapper {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    column-gap: 30px;
+  }
+
+  &__btn-logout {
+    height: 30px;
+    padding: 0 15px;
+    cursor: pointer;
+  }
+}
