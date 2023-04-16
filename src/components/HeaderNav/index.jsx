@@ -1,9 +1,15 @@
 import React from 'react'
 import { APP_ROUTER } from '../../constants/router'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './style.scss'
 
 const HeaderNav = () => {
+  const navigate = useNavigate()
+
+  const handleRedirectToLogin = () => {
+    navigate(APP_ROUTER.LOGIN_PAGE)
+  }
+
   return (
     <div className='header-nav'>
       <ul className='header-nav__wrapper'>
@@ -17,7 +23,7 @@ const HeaderNav = () => {
           <Link to={APP_ROUTER.ABOUT_PAGE}>About</Link>
         </li>
       </ul>
-      <button className='header-nav__btn-logout'>Logout</button>
+      <button className='header-nav__btn-logout' onClick={handleRedirectToLogin}>Logout</button>
     </div>
   )
 }

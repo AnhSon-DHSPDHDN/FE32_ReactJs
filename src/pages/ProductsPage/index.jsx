@@ -5,6 +5,7 @@ import { productFormSchema } from '../../validations/productFormSchema'
 import ProductTable from '../../components/ProductTable'
 import { KEY_PRODUCT_LIST } from '../../constants/common'
 import './style.scss'
+import useScrollToTop from '../../hooks/useScrollToTop'
 
 // Tạo form nhập thông tin hàng hóa và in ra màn hình dưới dạng list để quản lý
 // form gồm các field:
@@ -30,6 +31,7 @@ const initialFormValues = {
 }
 
 const ProductPage = () => {
+  useScrollToTop()
   const methods = useForm({
     defaultValues: initialFormValues,
     resolver: yupResolver(productFormSchema)
@@ -129,6 +131,7 @@ const ProductPage = () => {
       </form>
 
       <ProductTable productList={productList} />
+      <div style={{ height: 5000 }}></div>
     </div>
   )
 }

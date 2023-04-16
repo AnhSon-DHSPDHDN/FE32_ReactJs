@@ -18,14 +18,6 @@ const ProductTable = ({ productList }) => {
     return prevTotal + Number(product.inputPrice) * Number(product.productQuantity)
   }, 0)
 
-  let sum = 0
-  for (let i = 0; i < productList.length; i++) {
-    sum += Number(productList[i].inputPrice) * Number(productList[i].productQuantity)
-  }
-
-  console.log(computedInputPriceAllProduct);
-  console.log(sum, 'sum ne');
-
   return (
     <div>
       <h3>Tong so tien hang la: {computedInputPriceAllProduct}</h3>

@@ -1,5 +1,10 @@
 .header-nav {
   display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
   justify-content: space-between;
   padding: 0 30px;
   background: rgb(99, 140, 217);
